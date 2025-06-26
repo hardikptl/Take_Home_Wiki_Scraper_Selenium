@@ -1,5 +1,6 @@
 import re
 import time
+import json
 import validators
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -59,6 +60,17 @@ def crawl(start_url, depth):
     finally:
         driver.quit()
 
+def save_results():
+    data = {
+        "total_links_found": len(final_links),
+        "unique_links": len(set(final_links)),
+        "links": list(set(final_links))
+    }
+
+    # Save JSON
+    with open("output.json", "w") as json_file:
+        json.dump(data, json_file, indent=4)
+    print("output.json saved.")
 
 if __name__ == "__main__":
     try:
@@ -68,5 +80,6 @@ if __name__ == "__main__":
             raise ValueError("Depth must be 1, 2, or 3.")
 
         crawl(start_url, depth)
+        save_results()
     except Exception as e:
         print(f"Error: {e}")
